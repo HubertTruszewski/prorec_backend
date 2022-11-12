@@ -5,7 +5,7 @@ pipeline {
     }
 
     options {
-        gitLabConnection(gitLabConnection: 'gitlabelka_prorec_back_proj_token')
+        gitLabConnection(gitLabConnection: 'gitlab_backend_connection')
         gitlabBuilds(builds: ['build', 'test'])
         timestamps()
     }
