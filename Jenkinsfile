@@ -15,26 +15,28 @@ pipeline {
     }
 
     stages {
-        stage("Build") {
+
+        stage("build & SonarQube analysis") {
+            agent any
             steps {
-                gitlabCommitStatus(name: "build") {
-                    sh 'mvn package'
-                }
+              withSonarQubeEnv('sonarqube') {
+                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=$sonar_project_key'
+              }
             }
-        }
+          }
+          stage("Quality Gate") {
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+          }
+
         stage("Test") {
             steps {
                 gitlabCommitStatus(name: "test") {
                     sh 'mvn test'
                     updateGitlabCommitStatus name: 'test', state: 'success'
-                }
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                def mvn = tool 'maven';
-                withSonarQubeEnv() {
-                  sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=$sonar_project_key"
                 }
             }
         }
