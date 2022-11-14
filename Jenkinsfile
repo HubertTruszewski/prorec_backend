@@ -4,6 +4,10 @@ pipeline {
         maven "maven"
     }
 
+    environment {
+        sonar_project_key = credentials('sonarqube_backend_project_key')
+    }
+
     options {
         gitLabConnection(gitLabConnection: 'gitlab_backend_connection')
         gitlabBuilds(builds: ['build', 'test'])
@@ -24,6 +28,12 @@ pipeline {
                     sh 'mvn test'
                     updateGitlabCommitStatus name: 'test', state: 'success'
                 }
+            }
+        }
+        stage('SonarQube Analysis') {
+            def mvn = tool 'Default Maven';
+            withSonarQubeEnv() {
+              sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=$sonar_project_key"
             }
         }
     }
