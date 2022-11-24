@@ -1,6 +1,7 @@
 pipeline {
     agent any;
     tools {
+    	jdk "graalvm"
         maven "maven"
     }
 
@@ -15,6 +16,14 @@ pipeline {
     }
 
     stages {
+
+        stage("Which java") {
+            agent any;
+            steps {
+                sh 'java --version'
+                sh 'mvn --version'
+            }
+        }
 
         stage("build & SonarQube analysis") {
             agent any
