@@ -1,22 +1,27 @@
 package pl.edu.pw.elka.pis05.prorec.challenge.dto;
 
+import pl.edu.pw.elka.pis05.prorec.challenge.model.ChallengeType;
+import pl.edu.pw.elka.pis05.prorec.common.LanguageName;
+
 public class NewChallengeDTO {
     private String name;
     private String description;
     private String codeSnippet;
-    private String type;
+    private ChallengeType type;
     private String exampleTestCases;
+    private LanguageName language;
 
     public NewChallengeDTO() {
     }
 
-    public NewChallengeDTO(final String name, final String description, final String codeSnippet, final String type,
-            final String exampleTestCases) {
+    public NewChallengeDTO(final String name, final String description, final String codeSnippet,
+            final ChallengeType type, final String exampleTestCases, final LanguageName language) {
         this.name = name;
         this.description = description;
         this.codeSnippet = codeSnippet;
         this.type = type;
         this.exampleTestCases = exampleTestCases;
+        this.language = language;
     }
 
     public String getName() {
@@ -31,11 +36,15 @@ public class NewChallengeDTO {
         return codeSnippet;
     }
 
-    public String getType() {
+    public ChallengeType getType() {
         return type;
     }
 
     public String getExampleTestCases() {
         return exampleTestCases;
+    }
+
+    public LanguageName getLanguage() {
+        return language;
     }
 }

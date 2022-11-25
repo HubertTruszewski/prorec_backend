@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import pl.edu.pw.elka.pis05.prorec.common.LanguageName;
+
 @Entity(name = "CHALLENGE")
 @Table(name = "CHALLENGES")
 public class Challenge {
@@ -37,6 +39,10 @@ public class Challenge {
     @Column(name = "EXAMPLE_TEST_CASES", columnDefinition = "text")
     private String exampleTestCases;
 
+    @Enumerated(EnumType.ORDINAL)
+    @Column(columnDefinition = "bpchar(1)")
+    private LanguageName language;
+
     @OneToMany(mappedBy = "challenge")
     private List<TestCase> testCases = new LinkedList<>();
 
@@ -44,7 +50,8 @@ public class Challenge {
     }
 
     public Challenge(final long challengeId, final String name, final String description, final String codeSnippet,
-            final ChallengeType type, final String exampleTestCases, final List<TestCase> testCases) {
+            final ChallengeType type, final String exampleTestCases, final List<TestCase> testCases,
+            final LanguageName language) {
         this.challengeId = challengeId;
         this.name = name;
         this.description = description;
@@ -52,15 +59,17 @@ public class Challenge {
         this.type = type;
         this.exampleTestCases = exampleTestCases;
         this.testCases = testCases;
+        this.language = language;
     }
 
     public Challenge(final String name, final String description, final String codeSnippet, final ChallengeType type,
-            final String exampleTestCases) {
+            final String exampleTestCases, final LanguageName language) {
         this.name = name;
         this.description = description;
         this.codeSnippet = codeSnippet;
         this.type = type;
         this.exampleTestCases = exampleTestCases;
+        this.language = language;
     }
 
     public long getChallengeId() {
@@ -117,5 +126,13 @@ public class Challenge {
 
     public void setTestCases(List<TestCase> testCases) {
         this.testCases = testCases;
+    }
+
+    public LanguageName getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(LanguageName language) {
+        this.language = language;
     }
 }

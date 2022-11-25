@@ -18,14 +18,26 @@ public class TestCase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long testCaseId;
 
-    private String code;
+    @Column(nullable = false)
+    private String expression;
+
+    @Column(name = "EXPECTED_VALUE")
+    private int expectedValue;
 
     @ManyToOne
     @JoinColumn(name = "CHALLENGE_ID")
     private Challenge challenge;
-    public TestCase(long testCaseId, String code, Challenge challenge) {
+
+    public TestCase(long testCaseId, final String expression, final int expectedValue, final Challenge challenge) {
         this.testCaseId = testCaseId;
-        this.code = code;
+        this.expression = expression;
+        this.expectedValue = expectedValue;
+        this.challenge = challenge;
+    }
+
+    public TestCase(final String expression, final int expectedValue, final Challenge challenge) {
+        this.expression = expression;
+        this.expectedValue = expectedValue;
         this.challenge = challenge;
     }
 
@@ -40,12 +52,20 @@ public class TestCase {
         this.testCaseId = testCaseId;
     }
 
-    public String getCode() {
-        return code;
+    public String getExpression() {
+        return expression;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public int getExpectedValue() {
+        return expectedValue;
+    }
+
+    public void setExpectedValue(int expectedValue) {
+        this.expectedValue = expectedValue;
     }
 
     public Challenge getChallenge() {
