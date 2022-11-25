@@ -23,7 +23,7 @@ pipeline {
             steps {
               withSonarQubeEnv('sonarqube') {
                 sh """
-                mvn clean package sonar:sonar -Dsonar.projectKey=$sonar_project_key -DdbName=prorec_db -DdbHost=${env.postgres_address} -DdbPort=${env.postgres_port} -DdbUser=${postgres_credentials_usr} -DdbPass=${postgres_credentials_psw}
+                    mvn clean package sonar:sonar -Dsonar.projectKey=$sonar_project_key -DdbName=prorec_db -DdbHost=${env.postgres_address} -DdbPort=${env.postgres_port} -DdbUser=${postgres_credentials_usr} -DdbPass=${postgres_credentials_psw}
                 """
               }
             }
@@ -39,8 +39,11 @@ pipeline {
         stage("Test") {
             steps {
                 gitlabCommitStatus(name: "test") {
-                    sh 'mvn test'
+                    sh """
+                        mvn test -DdbName=prorec_db -DdbHost=${env.postgres_address} -DdbPort=${env.postgres_port} -DdbUser=${postgres_credentials_usr} -DdbPass=${postgres_credentials_psw}
+                    """
                     updateGitlabCommitStatus name: 'test', state: 'success'
+                    jacoco()
                 }
             }
         }
