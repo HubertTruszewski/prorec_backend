@@ -54,6 +54,15 @@ public class Challenge {
         this.testCases = testCases;
     }
 
+    public Challenge(final String name, final String description, final String codeSnippet, final ChallengeType type,
+            final String exampleTestCases) {
+        this.name = name;
+        this.description = description;
+        this.codeSnippet = codeSnippet;
+        this.type = type;
+        this.exampleTestCases = exampleTestCases;
+    }
+
     public long getChallengeId() {
         return challengeId;
     }
