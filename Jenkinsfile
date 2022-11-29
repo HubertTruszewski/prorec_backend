@@ -48,7 +48,19 @@ pipeline {
                 }
             }
         }
+
+        stage("Archive artifacts") {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war', followSymlinks: false
+            }
+        }
+        stage("Upload artifacts") {
+            steps {
+                nexusArtifactUploader artifacts: [[artifactId: 'pom.artifactId', classifier: '', file: 'target/prorec-0.0.1-SNAPSHOT.war', type: 'war']], credentialsId: 'b060b7af-7618-46c8-b951-04a189d155a4', groupId: 'pom.groupId', nexusUrl: '192.168.162.225:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'prorec-snapshots', version: 'pom.version'
+            }
+        }
     }
+
     post {
         always {
             discordSend description: "result:" + currentBuild.currentResult, link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME + " #" + env.BUILD_NUMBER, webhookURL: "https://discord.com/api/webhooks/1039587559984074802/g_jhnKHeB4LceQVX_Om2fmzlcwWgsOdDLq_Orz-q1TrySyvaYxFERBIYrnRK9QOO60xe", enableArtifactsList: true, showChangeset: true
