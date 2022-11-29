@@ -45,7 +45,7 @@ pipeline {
                         mvn test -DdbName=prorec_db -DdbHost=${env.postgres_address} -DdbPort=${env.postgres_port} -DdbUser=${postgres_credentials_usr} -DdbPass=${postgres_credentials_psw}
                     """
                     updateGitlabCommitStatus name: 'test', state: 'success'
-                    jacoco()
+                    jacoco exclusionPattern: '**/*DTO.*'
                 }
             }
         }
