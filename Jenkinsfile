@@ -8,6 +8,7 @@ pipeline {
     environment {
         sonar_project_key = credentials('sonarqube_backend_project_key')
         postgres_credentials = credentials('postgres_server');
+        pom = readMavenPom file: 'pom.xml'
     }
 
     options {
