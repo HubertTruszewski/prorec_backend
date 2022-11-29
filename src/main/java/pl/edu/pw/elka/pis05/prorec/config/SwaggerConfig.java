@@ -1,4 +1,4 @@
-package pl.edu.pw.elka.pis05.prorec;
+package pl.edu.pw.elka.pis05.prorec.config;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
