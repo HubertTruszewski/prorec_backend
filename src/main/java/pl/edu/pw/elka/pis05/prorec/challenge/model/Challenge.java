@@ -33,14 +33,12 @@ public class Challenge {
     private String codeSnippet;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(columnDefinition = "bpchar(1)")
     private ChallengeType type;
 
     @Column(name = "EXAMPLE_TEST_CASES", columnDefinition = "text")
     private String exampleTestCases;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(columnDefinition = "bpchar(1)")
     private LanguageName language;
 
     @OneToMany(mappedBy = "challenge")
