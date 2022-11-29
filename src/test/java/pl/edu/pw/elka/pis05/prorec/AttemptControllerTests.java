@@ -44,7 +44,7 @@ class AttemptControllerTests {
         testCaseRepository.save(new TestCase("avg([4, 5, 9])", 6, challenge));
 
         mvc.perform(post("/attempt/perform").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"challengeId\": 1, \"code\": \"def avg(numbers):\\n    return sum(numbers)/len(numbers)\"}"))
+                .content("{\"challengeId\": "+ challenge.getChallengeId() +", \"code\": \"def avg(numbers):\\n    return sum(numbers)/len(numbers)\"}"))
                 .andExpect(content().string("Success: 2, failure: 0\n"));
 
     }
