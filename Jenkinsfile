@@ -56,7 +56,7 @@ pipeline {
         }
         stage("Upload artifacts") {
             steps {
-                nexusArtifactUploader artifacts: [[artifactId: 'pom.artifactId', classifier: '', file: 'target/prorec-0.0.1-SNAPSHOT.war', type: 'war']], credentialsId: 'b060b7af-7618-46c8-b951-04a189d155a4', groupId: 'pom.groupId', nexusUrl: '192.168.162.225:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'prorec-snapshots', version: 'pom.version'
+                nexusArtifactUploader artifacts: [[artifactId: pom.artifactId, classifier: '', file: 'target/prorec-0.0.1-SNAPSHOT.war', type: 'war']], credentialsId: 'b060b7af-7618-46c8-b951-04a189d155a4', groupId: pom.groupId, nexusUrl: '192.168.162.225:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'prorec-snapshots', version: pom.version
             }
         }
     }
