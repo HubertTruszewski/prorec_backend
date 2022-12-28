@@ -45,8 +45,8 @@ class ChallengeServiceImplTest {
                         "code",
                         ChallengeType.EASY,
                         "example",
-                        new ArrayList<>(),
-                        LanguageName.PYTHON));
+                        LanguageName.PYTHON,
+                        new ArrayList<>()));
 
         Mockito.when(challengeRepository.save(new Challenge("abc",
                         "def",
@@ -60,8 +60,8 @@ class ChallengeServiceImplTest {
                         "code",
                         ChallengeType.EASY,
                         "example",
-                        new ArrayList<>(),
-                        LanguageName.PYTHON));
+                        LanguageName.PYTHON,
+                        new ArrayList<>()));
     }
 
     @Test

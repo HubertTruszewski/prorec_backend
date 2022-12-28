@@ -1,9 +1,11 @@
 package pl.edu.pw.elka.pis05.prorec.challenge.dto;
 
+import java.io.Serializable;
+
 import pl.edu.pw.elka.pis05.prorec.challenge.model.ChallengeType;
 import pl.edu.pw.elka.pis05.prorec.common.LanguageName;
 
-public class NewChallengeDTO {
+public class NewChallengeDTO implements Serializable {
     private String name;
     private String description;
     private String codeSnippet;
