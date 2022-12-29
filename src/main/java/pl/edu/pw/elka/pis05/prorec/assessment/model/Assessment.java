@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import pl.edu.pw.elka.pis05.prorec.challenge.model.Challenge;
-import pl.edu.pw.elka.pis05.prorec.security.User;
+import pl.edu.pw.elka.pis05.prorec.security.model.User;
 
 @Entity(name = "Assessment")
 @Table(name = "ASSESSMENTS")

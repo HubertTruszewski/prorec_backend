@@ -1,4 +1,4 @@
-package pl.edu.pw.elka.pis05.prorec.security;
+package pl.edu.pw.elka.pis05.prorec.security.model;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -11,6 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,10 +26,17 @@ public class User implements UserDetails, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Size(min = 3, max = 50)
     private String username;
 
+    @NotBlank
+    @Size(max = 100)
     private String password;
 
+    @NotBlank
+    @Email
+    @Size(max = 70)
     private String email;
 
     private boolean active;
