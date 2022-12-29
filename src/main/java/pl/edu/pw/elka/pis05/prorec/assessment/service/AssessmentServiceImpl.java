@@ -32,12 +32,12 @@ public class AssessmentServiceImpl implements AssessmentService {
     public AssessmentDTO addNewAssessment(NewAssessmentDTO newAssessmentDTO) {
         final long authorId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         final User author = userRepository.getReferenceById(authorId);
-        final List<Challenge> challengesList = newAssessmentDTO.getChallengesIds()
+        final List<Challenge> challengesList = newAssessmentDTO.challengesIds()
                 .stream()
                 .map(challengeRepository::getReferenceById)
                 .toList();
-        Assessment assessment = new Assessment(newAssessmentDTO.getEmail(),
-                newAssessmentDTO.getExpiryDate(),
+        Assessment assessment = new Assessment(newAssessmentDTO.email(),
+                newAssessmentDTO.expiryDate(),
                 author,
                 challengesList);
         assessmentRepository.save(assessment);

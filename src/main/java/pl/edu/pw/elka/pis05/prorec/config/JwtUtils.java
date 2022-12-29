@@ -41,6 +41,7 @@ public class JwtUtils {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (final Exception e) {
+            // TODO add logger
             e.printStackTrace();
         }
 
