@@ -20,11 +20,10 @@ pipeline {
     stages {
 
         stage("build & SonarQube analysis") {
-            agent any
             steps {
               withSonarQubeEnv('sonarqube') {
                 sh """
-                    mvn clean package sonar:sonar -Dsonar.projectKey=$sonar_project_key -DdbName=prorec_db -DdbHost=${env.postgres_address} -DdbPort=${env.postgres_port} -DdbUser=${postgres_credentials_usr} -DdbPass=${postgres_credentials_psw}
+                    mvn clean package
                 """
                 updateGitlabCommitStatus name: 'build', state: 'success'
               }

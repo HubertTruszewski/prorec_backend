@@ -43,9 +43,10 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public void addNewTestCase(final NewTestCaseDTO newTestCaseDTO) {
-        final Challenge challenge = challengeRepository.getReferenceById(newTestCaseDTO.getChallengeId());
-        final TestCase testCase = new TestCase(newTestCaseDTO.getExpression(),
-                newTestCaseDTO.getExpectedValue(),
+        final Challenge challenge = challengeRepository.getReferenceById(newTestCaseDTO.challengeId());
+        final TestCase testCase = new TestCase(newTestCaseDTO.expression(),
+                newTestCaseDTO.expectedValue(),
+                newTestCaseDTO.expectedValueType(),
                 challenge);
         testCaseRepository.save(testCase);
     }

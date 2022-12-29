@@ -1,6 +1,6 @@
 package pl.edu.pw.elka.pis05.prorec.challenge.model;
 
-import java.util.LinkedList;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,12 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import pl.edu.pw.elka.pis05.prorec.common.LanguageName;
 
 @Entity(name = "CHALLENGE")
 @Table(name = "CHALLENGES")
-public class Challenge {
-
+@AllArgsConstructor
+public class Challenge implements Serializable {
     @Id
     @Column(name = "CHALLENGE_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,22 +43,9 @@ public class Challenge {
     private LanguageName language;
 
     @OneToMany(mappedBy = "challenge")
-    private List<TestCase> testCases = new LinkedList<>();
+    private List<TestCase> testCases;
 
     public Challenge() {
-    }
-
-    public Challenge(final long challengeId, final String name, final String description, final String codeSnippet,
-            final ChallengeType type, final String exampleTestCases, final List<TestCase> testCases,
-            final LanguageName language) {
-        this.challengeId = challengeId;
-        this.name = name;
-        this.description = description;
-        this.codeSnippet = codeSnippet;
-        this.type = type;
-        this.exampleTestCases = exampleTestCases;
-        this.testCases = testCases;
-        this.language = language;
     }
 
     public Challenge(final String name, final String description, final String codeSnippet, final ChallengeType type,

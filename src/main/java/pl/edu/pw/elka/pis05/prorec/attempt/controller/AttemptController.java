@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pl.edu.pw.elka.pis05.prorec.attempt.dto.AttemptSummaryDTO;
 import pl.edu.pw.elka.pis05.prorec.attempt.dto.NewAttemptDTO;
 import pl.edu.pw.elka.pis05.prorec.attempt.service.AttemptService;
 
@@ -18,7 +19,7 @@ public class AttemptController {
     }
 
     @PostMapping("/perform")
-    public String performAttempt(@RequestBody final NewAttemptDTO newAttemptDTO) {
+    public AttemptSummaryDTO performAttempt(@RequestBody final NewAttemptDTO newAttemptDTO) {
         return attemptService.performAttempt(newAttemptDTO);
     }
 }
