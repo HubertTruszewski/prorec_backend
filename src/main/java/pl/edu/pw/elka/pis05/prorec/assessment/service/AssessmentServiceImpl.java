@@ -43,4 +43,9 @@ public class AssessmentServiceImpl implements AssessmentService {
         assessmentRepository.save(assessment);
         return AssessmentDTO.of(assessment);
     }
+
+    @Override
+    public List<AssessmentDTO> getAllAssessments() {
+        return assessmentRepository.findAll().stream().map(AssessmentDTO::of).toList();
+    }
 }

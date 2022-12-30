@@ -1,6 +1,9 @@
 package pl.edu.pw.elka.pis05.prorec.assessment.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,11 @@ public class AssessmentController {
 
     public AssessmentController(final AssessmentService assessmentService) {
         this.assessmentService = assessmentService;
+    }
+
+    @GetMapping("/all")
+    public List<AssessmentDTO> getAllAssessments() {
+        return assessmentService.getAllAssessments();
     }
 
     @PostMapping("/add")
