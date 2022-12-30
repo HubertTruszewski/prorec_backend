@@ -14,7 +14,10 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     @Override
     public void commence(final HttpServletRequest request, final HttpServletResponse response,
@@ -28,5 +31,6 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         body.put("path", request.getServletPath());
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
+        log.info("Trying to access unauthenticated: %s".formatted(request.getServletPath()));
     }
 }

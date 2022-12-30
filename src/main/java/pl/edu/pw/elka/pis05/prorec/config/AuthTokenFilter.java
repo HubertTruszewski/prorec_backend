@@ -17,7 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import pl.edu.pw.elka.pis05.prorec.security.service.UserDetailsServiceImpl;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
-
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -45,11 +44,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception e) {
-            //TODO add logger
+        } catch (final Exception e) {
+            logger.error(String.format("Cannot set user authentication %s", e));
             e.printStackTrace();
         }
-
         filterChain.doFilter(request, response);
     }
 }
