@@ -30,13 +30,14 @@ public class AssessmentServiceImpl implements AssessmentService {
     @Override
     public AssessmentDTO addNewAssessment(NewAssessmentDTO newAssessmentDTO) {
         // TODO user
-        final User author = userRepository.getReferenceById(newAssessmentDTO.getAuthorId());
-        final List<Challenge> challengesList = newAssessmentDTO.getChallengesIds()
+        final User author = userRepository.getReferenceById(newAssessmentDTO.authorId());
+        final List<Challenge> challengesList = newAssessmentDTO.challengesIds()
                 .stream()
                 .map(challengeRepository::getReferenceById)
                 .toList();
-        Assessment assessment = new Assessment(newAssessmentDTO.getEmail(),
-                newAssessmentDTO.getExpiryDate(),
+        Assessment assessment = new Assessment(newAssessmentDTO.email(),
+                newAssessmentDTO.expiryDate(),
+                newAssessmentDTO.solvingTime(),
                 author,
                 challengesList);
         assessmentRepository.save(assessment);

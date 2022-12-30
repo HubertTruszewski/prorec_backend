@@ -36,6 +36,9 @@ public class Assessment implements Serializable {
     @Column(name = "EXPIRY_DATE")
     private ZonedDateTime expiryDate;
 
+    @Column(name = "SOLVING_TIME")
+    private int solvingTime;
+
     @Enumerated(EnumType.ORDINAL)
     private AssessmentStatus status;
 
@@ -49,6 +52,20 @@ public class Assessment implements Serializable {
     @ManyToMany
     @JoinTable(name = "ASSESSMENT_SELECTED_CHALLENGES", joinColumns = @JoinColumn(name = "ASSESSMENT_ID"), inverseJoinColumns = @JoinColumn(name = "CHALLENGE_ID"))
     private List<Challenge> challengesList;
+
+    public Assessment() {
+    }
+
+    public Assessment(final String email, final ZonedDateTime expiryDate, final int solvingTime, final User author,
+            final List<Challenge> challengesList) {
+        this.email = email;
+        this.solvingTime = solvingTime;
+        this.createDate = ZonedDateTime.now();
+        this.expiryDate = expiryDate;
+        this.status = AssessmentStatus.AWAITING;
+        this.author = author;
+        this.challengesList = challengesList;
+    }
 
     public Long getAssessmentId() {
         return assessmentId;
@@ -114,16 +131,11 @@ public class Assessment implements Serializable {
         this.challengesList = challengesList;
     }
 
-    public Assessment() {
+    public int getSolvingTime() {
+        return solvingTime;
     }
 
-    public Assessment(final String email, final ZonedDateTime expiryDate, final User author,
-            final List<Challenge> challengesList) {
-        this.email = email;
-        this.createDate = ZonedDateTime.now();
-        this.expiryDate = expiryDate;
-        this.status = AssessmentStatus.AWAITING;
-        this.author = author;
-        this.challengesList = challengesList;
+    public void setSolvingTime(final int solvingTime) {
+        this.solvingTime = solvingTime;
     }
 }
