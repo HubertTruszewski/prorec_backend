@@ -30,6 +30,8 @@ public class Assessment implements Serializable {
 
     private String email;
 
+    private String token;
+
     @Column(name = "CREATE_DATE")
     private ZonedDateTime createDate;
 
@@ -56,9 +58,10 @@ public class Assessment implements Serializable {
     public Assessment() {
     }
 
-    public Assessment(final String email, final ZonedDateTime expiryDate, final int solvingTime, final User author,
+    public Assessment(final String email, final String token, final ZonedDateTime expiryDate, final int solvingTime, final User author,
             final List<Challenge> challengesList) {
         this.email = email;
+        this.token = token;
         this.solvingTime = solvingTime;
         this.createDate = ZonedDateTime.now();
         this.expiryDate = expiryDate;
@@ -137,5 +140,9 @@ public class Assessment implements Serializable {
 
     public void setSolvingTime(final int solvingTime) {
         this.solvingTime = solvingTime;
+    }
+
+    public String getToken() {
+        return token;
     }
 }

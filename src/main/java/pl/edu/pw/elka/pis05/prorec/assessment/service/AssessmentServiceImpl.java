@@ -1,6 +1,7 @@
 package pl.edu.pw.elka.pis05.prorec.assessment.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -31,12 +32,12 @@ public class AssessmentServiceImpl implements AssessmentService {
     public AssessmentDTO addNewAssessment(NewAssessmentDTO newAssessmentDTO) {
         // TODO user
         final User author = userRepository.getReferenceById(newAssessmentDTO.authorId());
+        final String token = UUID.randomUUID().toString();
         final List<Challenge> challengesList = newAssessmentDTO.challengesIds()
                 .stream()
                 .map(challengeRepository::getReferenceById)
                 .toList();
-        Assessment assessment = new Assessment(newAssessmentDTO.email(),
-                newAssessmentDTO.expiryDate(),
+        Assessment assessment = new Assessment(newAssessmentDTO.email(), token, newAssessmentDTO.expiryDate(),
                 newAssessmentDTO.solvingTime(),
                 author,
                 challengesList);
