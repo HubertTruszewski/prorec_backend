@@ -4,7 +4,9 @@ public enum AssessmentStatus {
     AWAITING("AWAITING"),
     IN_PROGRESS("IN_PROGRESS"),
     DONE("DONE"),
-    EXPIRED("EXPIRED");
+    EXPIRED("EXPIRED"),
+    CANCELLED("CANCELLED");
+
 
     private final String status;
 

@@ -1,13 +1,19 @@
 package pl.edu.pw.elka.pis05.prorec.assessment.service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import pl.edu.pw.elka.pis05.prorec.assessment.dto.AssessmentDTO;
 import pl.edu.pw.elka.pis05.prorec.assessment.dto.NewAssessmentDTO;
 import pl.edu.pw.elka.pis05.prorec.assessment.model.Assessment;
+import pl.edu.pw.elka.pis05.prorec.assessment.model.AssessmentStatus;
 import pl.edu.pw.elka.pis05.prorec.assessment.repository.AssessmentRepository;
 import pl.edu.pw.elka.pis05.prorec.challenge.model.Challenge;
 import pl.edu.pw.elka.pis05.prorec.challenge.repository.ChallengeRepository;
@@ -37,7 +43,9 @@ public class AssessmentServiceImpl implements AssessmentService {
                 .stream()
                 .map(challengeRepository::getReferenceById)
                 .toList();
-        Assessment assessment = new Assessment(newAssessmentDTO.email(), token, newAssessmentDTO.expiryDate(),
+        Assessment assessment = new Assessment(newAssessmentDTO.email(),
+                token,
+                newAssessmentDTO.expiryDate(),
                 newAssessmentDTO.solvingTime(),
                 author,
                 challengesList);
@@ -48,5 +56,21 @@ public class AssessmentServiceImpl implements AssessmentService {
     @Override
     public List<AssessmentDTO> getAllAssessments() {
         return assessmentRepository.findAll().stream().map(AssessmentDTO::of).toList();
+    }
+
+    @Override
+    public AssessmentDTO getAssessment(final long assessmentId) {
+        return AssessmentDTO.of(Objects.requireNonNull(assessmentRepository.findById(assessmentId).orElse(null)));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Void> cancelAssessment(final long assessmentId) {
+        final Optional<Assessment> assessment = assessmentRepository.findById(assessmentId);
+        if (assessment.isPresent() && assessment.get().getStatus() == AssessmentStatus.AWAITING) {
+            assessment.get().setStatus(AssessmentStatus.CANCELLED);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }
