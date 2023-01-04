@@ -22,8 +22,6 @@ import pl.edu.pw.elka.pis05.prorec.assessment.repository.AssessmentRepository;
 import pl.edu.pw.elka.pis05.prorec.challenge.model.Challenge;
 import pl.edu.pw.elka.pis05.prorec.challenge.repository.ChallengeRepository;
 import pl.edu.pw.elka.pis05.prorec.common.MessageResponse;
-import pl.edu.pw.elka.pis05.prorec.security.User;
-import pl.edu.pw.elka.pis05.prorec.security.UserRepository;
 import pl.edu.pw.elka.pis05.prorec.security.model.User;
 import pl.edu.pw.elka.pis05.prorec.security.repository.UserRepository;
 
@@ -49,17 +47,12 @@ public class AssessmentServiceImpl implements AssessmentService {
     public AssessmentDTO addNewAssessment(NewAssessmentDTO newAssessmentDTO) {
         final long authorId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         final User author = userRepository.getReferenceById(authorId);
-        final List<Challenge> challengesList = newAssessmentDTO.challengesIds()
-        // TODO user
-        final User author = userRepository.getReferenceById(newAssessmentDTO.authorId());
         final String token = UUID.randomUUID().toString();
         final List<Challenge> challengesList = newAssessmentDTO.challengesIds()
                 .stream()
                 .map(challengeRepository::getReferenceById)
                 .toList();
-        Assessment assessment = new Assessment(newAssessmentDTO.email(),
-                newAssessmentDTO.expiryDate(),
-        Assessment assessment = new Assessment(newAssessmentDTO.email(),
+        final Assessment assessment = new Assessment(newAssessmentDTO.email(),
                 token,
                 newAssessmentDTO.expiryDate(),
                 newAssessmentDTO.solvingTime(),
