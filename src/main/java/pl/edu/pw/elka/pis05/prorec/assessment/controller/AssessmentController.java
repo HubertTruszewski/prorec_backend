@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.edu.pw.elka.pis05.prorec.assessment.dto.AssessmentDTO;
 import pl.edu.pw.elka.pis05.prorec.assessment.dto.NewAssessmentDTO;
 import pl.edu.pw.elka.pis05.prorec.assessment.service.AssessmentService;
+import pl.edu.pw.elka.pis05.prorec.common.MessageResponse;
 
 @RestController
 @RequestMapping("/assessment")
@@ -42,8 +43,23 @@ public class AssessmentController {
         return assessmentService.getAssessment(assessmentId);
     }
 
+    @PutMapping("/start/{assessmentId}")
+    public ResponseEntity<AssessmentDTO> startAssessment(@PathVariable final long assessmentId) {
+        return assessmentService.startAssessment(assessmentId);
+    }
+
     @PutMapping("/cancel/{assessmentId}")
     public ResponseEntity<Void> cancelAssessment(@PathVariable final long assessmentId) {
         return assessmentService.cancelAssessment(assessmentId);
+    }
+
+    @PutMapping("/finish/{assessmentId}")
+    public ResponseEntity<Void> finishAssessment(@PathVariable final long assessmentId) {
+        return assessmentService.finishAssessment(assessmentId);
+    }
+
+    @GetMapping("/token/{token}")
+    public ResponseEntity<MessageResponse> getAssessmentIdByToken(@PathVariable final String token) {
+        return assessmentService.getAssessmentIdByToken(token);
     }
 }

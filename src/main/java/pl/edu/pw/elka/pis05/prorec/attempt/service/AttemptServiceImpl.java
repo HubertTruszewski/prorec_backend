@@ -13,7 +13,9 @@ import org.graalvm.polyglot.Value;
 import org.springframework.stereotype.Service;
 
 import pl.edu.pw.elka.pis05.prorec.assessment.model.Assessment;
+import pl.edu.pw.elka.pis05.prorec.assessment.model.AssessmentStatus;
 import pl.edu.pw.elka.pis05.prorec.assessment.repository.AssessmentRepository;
+import pl.edu.pw.elka.pis05.prorec.attempt.dto.AttemptDTO;
 import pl.edu.pw.elka.pis05.prorec.attempt.dto.AttemptSummaryDTO;
 import pl.edu.pw.elka.pis05.prorec.attempt.dto.NewAttemptDTO;
 import pl.edu.pw.elka.pis05.prorec.attempt.model.Attempt;
@@ -47,9 +49,17 @@ public class AttemptServiceImpl implements AttemptService {
         final String language = challenge.getLanguage().getName();
         final String code = newAttemptDTO.getCode();
         final List<TestResult> testResults = new LinkedList<>();
-        final Assessment assessment = assessmentRepository.getReferenceById(newAttemptDTO.getAssessmentId());
-        final Attempt attempt = new Attempt(code, ZonedDateTime.now(), assessment, challenge, null);
+        final Assessment assessment = assessmentRepository.getAssessmentsByAssessmentId(newAttemptDTO.getAssessmentId());
+        final Attempt attempt = new Attempt(code, null, ZonedDateTime.now(), assessment, challenge, null);
         attemptRepository.save(attempt);
+
+        if (assessment.getStatus() != AssessmentStatus.IN_PROGRESS) {
+            attempt.setCodeError(true);
+            final String errorMessage = String.format("You cannot send solutions to assessment with status %s",
+                    assessment.getStatus());
+            attempt.setCodeErrorDetails(errorMessage);
+            return new AttemptSummaryDTO(errorMessage);
+        }
 
         try (final Context context = Context.create()) {
             context.eval(language, code);
@@ -67,13 +77,44 @@ public class AttemptServiceImpl implements AttemptService {
             }
         } catch (PolyglotException e) {
             attempt.setCodeError(true);
-            return new AttemptSummaryDTO(generateErrorMessage(e));
+            final String errorMessage = generateErrorMessage(e);
+            attempt.setCodeErrorDetails(errorMessage);
+            return new AttemptSummaryDTO(errorMessage);
         }
 
         testResultRepository.saveAll(testResults);
         final long correct = testResults.stream().filter(TestResult::isPassed).count();
         final long incorrect = testResults.size() - correct;
         return new AttemptSummaryDTO(correct, incorrect);
+    }
+
+    @Override
+    public AttemptDTO getAttempt(final long attemptId) {
+        final Attempt attempt = attemptRepository.findByAttemptId(attemptId);
+        return new AttemptDTO(attempt.getAttemptId(),
+                attempt.getSubmittedCode(),
+                attempt.isCodeError(),
+                attempt.getCodeErrorDetails(),
+                attempt.getSubmitDate(),
+                createAttemptSummaryDTO(attempt),
+                attempt.getChallenge().getChallengeId(),
+                attempt.getAssessment().getAssessmentId());
+    }
+
+    @Override
+    public List<AttemptDTO> getAttemptsSummaryList(final long assessmentId) {
+        final Assessment assessment = assessmentRepository.getReferenceById(assessmentId);
+        return attemptRepository.findAllByAssessment(assessment)
+                .stream()
+                .map(attempt -> new AttemptDTO(attempt.getAttemptId(),
+                        attempt.getSubmittedCode(),
+                        attempt.isCodeError(),
+                        attempt.getCodeErrorDetails(),
+                        attempt.getSubmitDate(),
+                        createAttemptSummaryDTO(attempt),
+                        attempt.getChallenge().getChallengeId(),
+                        assessmentId))
+                .toList();
     }
 
     private boolean testPassed(final Value value, final TestCase testCase) {
@@ -91,5 +132,15 @@ public class AttemptServiceImpl implements AttemptService {
         final int column = codeSection.getStartColumn();
 
         return String.format("Type: %s, location: line %d, column %d", errorType, line, column);
+    }
+
+    private AttemptSummaryDTO createAttemptSummaryDTO(final Attempt attempt) {
+        if (attempt.isCodeError()) {
+            return new AttemptSummaryDTO(attempt.getCodeErrorDetails());
+        }
+        final List<TestResult> testResults = attempt.getTestResultsList();
+        final long testPassed = testResults.stream().filter(TestResult::isPassed).count();
+        final long testFailed = testResults.size() - testPassed;
+        return new AttemptSummaryDTO(testPassed, testFailed);
     }
 }

@@ -31,6 +31,9 @@ public class Attempt implements Serializable {
     @Column(name = "CODE_ERROR")
     private boolean codeError;
 
+    @Column(name = "CODE_ERROR_DETAILS")
+    private String codeErrorDetails;
+
     @Column(name = "SUBMIT_DATE")
     private ZonedDateTime submitDate;
 
@@ -46,19 +49,21 @@ public class Attempt implements Serializable {
     @JoinColumn(name = "ATTEMPT_ID")
     private List<TestResult> testResultsList;
 
-    public Attempt(long attemptId, String submittedCode, ZonedDateTime submitDate,
+    public Attempt(long attemptId, String submittedCode, final String codeErrorDetails, ZonedDateTime submitDate,
             Assessment assessment, Challenge challenge, List<TestResult> testResultsList) {
         this.attemptId = attemptId;
         this.submittedCode = submittedCode;
+        this.codeErrorDetails = codeErrorDetails;
         this.submitDate = submitDate;
         this.assessment = assessment;
         this.challenge = challenge;
         this.testResultsList = testResultsList;
     }
 
-    public Attempt(String submittedCode, ZonedDateTime submitDate, Assessment assessment,
+    public Attempt(String submittedCode, final String codeErrorDetails, ZonedDateTime submitDate, Assessment assessment,
             Challenge challenge, List<TestResult> testResultsList) {
         this.submittedCode = submittedCode;
+        this.codeErrorDetails = codeErrorDetails;
         this.submitDate = submitDate;
         this.assessment = assessment;
         this.challenge = challenge;
@@ -114,5 +119,17 @@ public class Attempt implements Serializable {
 
     public void setChallenge(Challenge challenge) {
         this.challenge = challenge;
+    }
+
+    public List<TestResult> getTestResultsList() {
+        return testResultsList;
+    }
+
+    public String getCodeErrorDetails() {
+        return codeErrorDetails;
+    }
+
+    public void setCodeErrorDetails(final String codeErrorDetails) {
+        this.codeErrorDetails = codeErrorDetails;
     }
 }
