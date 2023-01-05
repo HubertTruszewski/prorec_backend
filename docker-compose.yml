@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+  database:
+    container_name: prorec_database
+    image: postgres
+    volumes:
+      - ./ddl.sql:/docker-entrypoint-initdb.d/ddl.sql
+    environment:
+       POSTGRES_PASSWORD: prorec_pass
+       POSTGRES_USER: prorec_user
+       POSTGRES_DB: prorec_db
+
+  backend:
+    container_name: prorec_backend
+    depends_on:
+      - database
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: prorec_backend
+    environment:
+      dbUser: prorec_user
+      dbPass: prorec_pass
+      dbName: prorec_db
+      dbHost: database
+      dbPort: 5432
+
+  frontend:
+    container_name: prorec_frontend
+    depends_on:
+      - database
+      - backend
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: prorec_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      BACKENDHOST: backend
+      BACKENDPORT: 8085
