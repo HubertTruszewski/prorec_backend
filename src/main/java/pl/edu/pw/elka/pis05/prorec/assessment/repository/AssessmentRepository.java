@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import pl.edu.pw.elka.pis05.prorec.assessment.model.Assessment;
 import pl.edu.pw.elka.pis05.prorec.assessment.model.AssessmentStatus;
+import pl.edu.pw.elka.pis05.prorec.security.model.User;
 
 @Repository
 public interface AssessmentRepository extends JpaRepository<Assessment, Long> {
@@ -19,4 +20,6 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long> {
     List<Assessment> getAssessmentsByStatusAndExpiryDateBefore(AssessmentStatus status, ZonedDateTime date);
 
     List<Assessment> getAssessmentsByStatusAndDeadlineBefore(AssessmentStatus status, ZonedDateTime date);
+
+    List<Assessment> getAssessmentsByAuthor(User user);
 }

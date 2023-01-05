@@ -2,8 +2,11 @@ package pl.edu.pw.elka.pis05.prorec.assessment.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,12 +32,14 @@ public class AssessmentController {
     }
 
     @GetMapping("/all")
+    @RolesAllowed("ROLE_ADMIN")
     public List<AssessmentDTO> getAllAssessments() {
         return assessmentService.getAllAssessments();
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
+    @RolesAllowed("ROLE_USER")
     public AssessmentDTO addNewAssessment(@RequestBody final NewAssessmentDTO newAssessmentDTO) {
         return assessmentService.addNewAssessment(newAssessmentDTO);
     }
@@ -50,6 +55,7 @@ public class AssessmentController {
     }
 
     @PutMapping("/cancel/{assessmentId}")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<Void> cancelAssessment(@PathVariable final long assessmentId) {
         return assessmentService.cancelAssessment(assessmentId);
     }
@@ -62,5 +68,11 @@ public class AssessmentController {
     @GetMapping("/token/{token}")
     public ResponseEntity<MessageResponse> getAssessmentIdByToken(@PathVariable final String token) {
         return assessmentService.getAssessmentIdByToken(token);
+    }
+
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("#userId == authentication.principal.id")
+    public List<AssessmentDTO> getAssessmentForUser(@PathVariable final long userId) {
+        return assessmentService.getAssessmentForUser(userId);
     }
 }

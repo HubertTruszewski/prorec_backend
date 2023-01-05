@@ -31,7 +31,7 @@ public class AssessmentScheduleServiceImpl implements AssessmentScheduleService 
     @Override
     @Transactional
     public void markAssessmentsAsDone() {
-        final List<Assessment> assessmentsToFinish = assessmentRepository.getAssessmentsByStatusAndExpiryDateBefore(
+        final List<Assessment> assessmentsToFinish = assessmentRepository.getAssessmentsByStatusAndDeadlineBefore(
                 AssessmentStatus.IN_PROGRESS,
                 ZonedDateTime.now());
         assessmentsToFinish.forEach(assessment -> assessment.setStatus(AssessmentStatus.DONE));

@@ -125,4 +125,11 @@ public class AssessmentServiceImpl implements AssessmentService {
         }
         return ResponseEntity.ok(new MessageResponse(assessment.get().getAssessmentId().toString()));
     }
+
+    @Override
+    public List<AssessmentDTO> getAssessmentForUser(final long userId) {
+        final User user = userRepository.getReferenceById(userId);
+        final List<Assessment> assessments = assessmentRepository.getAssessmentsByAuthor(user);
+        return assessments.stream().map(AssessmentDTO::of).toList();
+    }
 }

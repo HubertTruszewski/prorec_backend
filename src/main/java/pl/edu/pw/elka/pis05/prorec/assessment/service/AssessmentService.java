@@ -22,4 +22,6 @@ public interface AssessmentService {
     ResponseEntity<Void> finishAssessment(long assessmentId);
 
     ResponseEntity<MessageResponse> getAssessmentIdByToken(String token);
+
+    List<AssessmentDTO> getAssessmentForUser(long userId);
 }
