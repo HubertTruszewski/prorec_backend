@@ -22,6 +22,7 @@ import pl.edu.pw.elka.pis05.prorec.assessment.repository.AssessmentRepository;
 import pl.edu.pw.elka.pis05.prorec.challenge.model.Challenge;
 import pl.edu.pw.elka.pis05.prorec.challenge.repository.ChallengeRepository;
 import pl.edu.pw.elka.pis05.prorec.common.MessageResponse;
+import pl.edu.pw.elka.pis05.prorec.notification.service.NotificationService;
 import pl.edu.pw.elka.pis05.prorec.security.model.User;
 import pl.edu.pw.elka.pis05.prorec.security.repository.UserRepository;
 
@@ -33,14 +34,16 @@ public class AssessmentServiceImpl implements AssessmentService {
     private final ChallengeRepository challengeRepository;
     private final UserRepository userRepository;
     private final ThreadPoolTaskScheduler threadPoolTaskScheduler;
+    private final NotificationService notificationService;
 
     public AssessmentServiceImpl(final AssessmentRepository assessmentRepository,
             final ChallengeRepository challengeRepository, final UserRepository userRepository,
-            final ThreadPoolTaskScheduler threadPoolTaskScheduler) {
+            final ThreadPoolTaskScheduler threadPoolTaskScheduler, final NotificationService notificationService) {
         this.assessmentRepository = assessmentRepository;
         this.challengeRepository = challengeRepository;
         this.userRepository = userRepository;
         this.threadPoolTaskScheduler = threadPoolTaskScheduler;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -59,6 +62,7 @@ public class AssessmentServiceImpl implements AssessmentService {
                 author,
                 challengesList);
         assessmentRepository.save(assessment);
+        notificationService.sendApplicantNewAssessmentMail(assessment);
         return AssessmentDTO.of(assessment);
     }
 
@@ -103,6 +107,7 @@ public class AssessmentServiceImpl implements AssessmentService {
         final Optional<Assessment> assessment = assessmentRepository.findById(assessmentId);
         if (assessment.isPresent() && assessment.get().getStatus() == AssessmentStatus.IN_PROGRESS) {
             assessment.get().setStatus(AssessmentStatus.DONE);
+            notificationService.sendAssessmentFinishedMail(assessment.get());
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();

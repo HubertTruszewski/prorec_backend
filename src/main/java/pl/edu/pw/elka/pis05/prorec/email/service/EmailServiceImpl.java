@@ -13,9 +13,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.edu.pw.elka.pis05.prorec.email.service.template.service.TemplateService;
 
 @Service
+@Slf4j
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender emailSender;
     private final TemplateService templateService;
@@ -24,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
 
     public EmailServiceImpl(final JavaMailSender javaMailSender, final TemplateService templateService,
             @Value("${spring.mail.username}") final String senderAddress,
-            @Value("${prorec.app.senderName}") final String senderName) {
+            @Value("${prorec.mail.senderName}") final String senderName) {
         this.emailSender = javaMailSender;
         this.templateService = templateService;
         this.senderAddress = senderAddress;
@@ -39,8 +41,7 @@ public class EmailServiceImpl implements EmailService {
             message.setText(content);
             emailSender.send(message);
         } catch (final UnsupportedEncodingException | MessagingException e) {
-            // TODO Add logger
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
@@ -53,8 +54,7 @@ public class EmailServiceImpl implements EmailService {
             message.setContent(messageContent, "text/html");
             emailSender.send(message);
         } catch (final UnsupportedEncodingException | MessagingException e) {
-            //TODO add logger
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
