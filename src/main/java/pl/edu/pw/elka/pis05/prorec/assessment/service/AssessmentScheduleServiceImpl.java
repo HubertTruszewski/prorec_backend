@@ -10,13 +10,17 @@ import org.springframework.stereotype.Service;
 import pl.edu.pw.elka.pis05.prorec.assessment.model.Assessment;
 import pl.edu.pw.elka.pis05.prorec.assessment.model.AssessmentStatus;
 import pl.edu.pw.elka.pis05.prorec.assessment.repository.AssessmentRepository;
+import pl.edu.pw.elka.pis05.prorec.notification.service.NotificationService;
 
 @Service
 public class AssessmentScheduleServiceImpl implements AssessmentScheduleService {
     private final AssessmentRepository assessmentRepository;
+    private final NotificationService notificationService;
 
-    public AssessmentScheduleServiceImpl(final AssessmentRepository assessmentRepository) {
+    public AssessmentScheduleServiceImpl(final AssessmentRepository assessmentRepository,
+            final NotificationService notificationService) {
         this.assessmentRepository = assessmentRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -34,6 +38,9 @@ public class AssessmentScheduleServiceImpl implements AssessmentScheduleService 
         final List<Assessment> assessmentsToFinish = assessmentRepository.getAssessmentsByStatusAndDeadlineBefore(
                 AssessmentStatus.IN_PROGRESS,
                 ZonedDateTime.now());
-        assessmentsToFinish.forEach(assessment -> assessment.setStatus(AssessmentStatus.DONE));
+        assessmentsToFinish.forEach(assessment -> {
+            assessment.setStatus(AssessmentStatus.DONE);
+            notificationService.sendAssessmentFinishedMail(assessment);
+        });
     }
 }
