@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,8 @@ import pl.edu.pw.elka.pis05.prorec.assessment.repository.AssessmentRepository;
 import pl.edu.pw.elka.pis05.prorec.challenge.model.Challenge;
 import pl.edu.pw.elka.pis05.prorec.challenge.repository.ChallengeRepository;
 import pl.edu.pw.elka.pis05.prorec.common.MessageResponse;
-import pl.edu.pw.elka.pis05.prorec.security.User;
-import pl.edu.pw.elka.pis05.prorec.security.UserRepository;
+import pl.edu.pw.elka.pis05.prorec.security.model.User;
+import pl.edu.pw.elka.pis05.prorec.security.repository.UserRepository;
 
 @Service
 @Slf4j
@@ -44,14 +45,14 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     @Override
     public AssessmentDTO addNewAssessment(NewAssessmentDTO newAssessmentDTO) {
-        // TODO user
-        final User author = userRepository.getReferenceById(newAssessmentDTO.authorId());
+        final long authorId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        final User author = userRepository.getReferenceById(authorId);
         final String token = UUID.randomUUID().toString();
         final List<Challenge> challengesList = newAssessmentDTO.challengesIds()
                 .stream()
                 .map(challengeRepository::getReferenceById)
                 .toList();
-        Assessment assessment = new Assessment(newAssessmentDTO.email(),
+        final Assessment assessment = new Assessment(newAssessmentDTO.email(),
                 token,
                 newAssessmentDTO.expiryDate(),
                 newAssessmentDTO.solvingTime(),
@@ -123,5 +124,12 @@ public class AssessmentServiceImpl implements AssessmentService {
             return ResponseEntity.badRequest().body(new MessageResponse("The assessment has been finished"));
         }
         return ResponseEntity.ok(new MessageResponse(assessment.get().getAssessmentId().toString()));
+    }
+
+    @Override
+    public List<AssessmentDTO> getAssessmentForUser(final long userId) {
+        final User user = userRepository.getReferenceById(userId);
+        final List<Assessment> assessments = assessmentRepository.getAssessmentsByAuthor(user);
+        return assessments.stream().map(AssessmentDTO::of).toList();
     }
 }

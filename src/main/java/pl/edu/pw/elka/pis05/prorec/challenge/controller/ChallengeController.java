@@ -2,6 +2,8 @@ package pl.edu.pw.elka.pis05.prorec.challenge.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,17 +41,20 @@ public class ChallengeController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
+    @RolesAllowed("ROLE_USER")
     public ChallengeDTO addNewChallenge(@RequestBody final NewChallengeDTO newChallengeDTO) {
         return challengeService.addNewChallenge(newChallengeDTO);
     }
 
     @PostMapping("/addTestCase")
     @ResponseStatus(HttpStatus.CREATED)
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<TestCaseDTO> addNewTestCase(@RequestBody final NewTestCaseDTO newTestCaseDTO) {
         return challengeService.addNewTestCase(newTestCaseDTO);
     }
 
     @GetMapping("/{challengeId}/testCases")
+    @RolesAllowed("ROLE_USER")
     public List<TestCaseDTO> getTestCasesForChallenge(@PathVariable final long challengeId) {
         return challengeService.getTestCasesForChallenge(challengeId);
     }
