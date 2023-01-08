@@ -74,6 +74,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     public ChallengeDTO modifyChallenge(final long challengeId, final NewChallengeDTO modifiedChallenge) {
         final Challenge challenge = challengeRepository.findByChallengeId(challengeId);
         challenge.setName(modifiedChallenge.getName());
+        challenge.setDescription(modifiedChallenge.getDescription());
         challenge.setCodeSnippet(modifiedChallenge.getCodeSnippet());
         challenge.setType(modifiedChallenge.getType());
         challenge.setExampleTestCases(modifiedChallenge.getExampleTestCases());
