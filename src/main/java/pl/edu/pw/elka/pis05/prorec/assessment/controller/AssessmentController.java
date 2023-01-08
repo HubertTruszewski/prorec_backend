@@ -21,7 +21,6 @@ import pl.edu.pw.elka.pis05.prorec.assessment.dto.NewAssessmentDTO;
 import pl.edu.pw.elka.pis05.prorec.assessment.service.AssessmentService;
 import pl.edu.pw.elka.pis05.prorec.common.MessageResponse;
 
-
 @RestController
 @RequestMapping("/assessment")
 public class AssessmentController {
@@ -74,5 +73,12 @@ public class AssessmentController {
     @PreAuthorize("#userId == authentication.principal.id")
     public List<AssessmentDTO> getAssessmentForUser(@PathVariable final long userId) {
         return assessmentService.getAssessmentForUser(userId);
+    }
+
+    @PostMapping("/addBulk")
+    @RolesAllowed("ROLE_USER")
+    public ResponseEntity<List<AssessmentDTO>> addBulkNewAssessments(
+            @RequestBody final NewAssessmentDTO newBulkAssessmentsDTO) {
+        return assessmentService.addBulkNewAssessments(newBulkAssessmentsDTO);
     }
 }
