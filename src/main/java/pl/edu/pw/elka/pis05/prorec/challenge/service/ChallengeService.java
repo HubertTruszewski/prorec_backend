@@ -19,4 +19,6 @@ public interface ChallengeService {
     List<ChallengeDTO> getAllChallenges();
 
     List<TestCaseDTO> getTestCasesForChallenge(long challengeId);
+
+    ChallengeDTO modifyChallenge(long challengeId, NewChallengeDTO challenge);
 }

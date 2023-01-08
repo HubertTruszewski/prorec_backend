@@ -2,6 +2,8 @@ package pl.edu.pw.elka.pis05.prorec.challenge.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -65,5 +67,17 @@ public class ChallengeServiceImpl implements ChallengeService {
         final Challenge challenge = challengeRepository.getReferenceById(challengeId);
         final List<TestCase> testCases = testCaseRepository.findAllByChallenge(challenge);
         return testCases.stream().map(TestCaseDTO::of).toList();
+    }
+
+    @Override
+    @Transactional
+    public ChallengeDTO modifyChallenge(final long challengeId, final NewChallengeDTO modifiedChallenge) {
+        final Challenge challenge = challengeRepository.findByChallengeId(challengeId);
+        challenge.setName(modifiedChallenge.getName());
+        challenge.setCodeSnippet(modifiedChallenge.getCodeSnippet());
+        challenge.setType(modifiedChallenge.getType());
+        challenge.setExampleTestCases(modifiedChallenge.getExampleTestCases());
+        challenge.setLanguage(modifiedChallenge.getLanguage());
+        return ChallengeDTO.of(challenge);
     }
 }

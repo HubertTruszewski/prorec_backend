@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -57,5 +58,11 @@ public class ChallengeController {
     @RolesAllowed("ROLE_USER")
     public List<TestCaseDTO> getTestCasesForChallenge(@PathVariable final long challengeId) {
         return challengeService.getTestCasesForChallenge(challengeId);
+    }
+
+    @PutMapping("/{challengeId}")
+    public ChallengeDTO modifyChallenge(@PathVariable final long challengeId,
+            @RequestBody final NewChallengeDTO challenge) {
+        return challengeService.modifyChallenge(challengeId, challenge);
     }
 }
