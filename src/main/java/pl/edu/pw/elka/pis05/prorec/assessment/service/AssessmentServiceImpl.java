@@ -1,6 +1,7 @@
 package pl.edu.pw.elka.pis05.prorec.assessment.service;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -136,5 +138,18 @@ public class AssessmentServiceImpl implements AssessmentService {
         final User user = userRepository.getReferenceById(userId);
         final List<Assessment> assessments = assessmentRepository.getAssessmentsByAuthor(user);
         return assessments.stream().map(AssessmentDTO::of).toList();
+    }
+
+    @Override
+    public ResponseEntity<List<AssessmentDTO>> addBulkNewAssessments(
+            final NewAssessmentDTO newBulkAssessmentsDTO) {
+        final List<String> emailsList = Arrays.stream(newBulkAssessmentsDTO.email().split("\n")).toList();
+        final List<AssessmentDTO> assessmentsList = emailsList.stream()
+                .map(email -> addNewAssessment(new NewAssessmentDTO(email,
+                        newBulkAssessmentsDTO.expiryDate(),
+                        newBulkAssessmentsDTO.solvingTime(),
+                        newBulkAssessmentsDTO.challengesIds())))
+                .toList();
+        return ResponseEntity.status(HttpStatus.CREATED).body(assessmentsList);
     }
 }
