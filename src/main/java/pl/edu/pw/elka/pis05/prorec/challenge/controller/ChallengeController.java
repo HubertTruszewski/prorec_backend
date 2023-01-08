@@ -61,6 +61,7 @@ public class ChallengeController {
     }
 
     @PutMapping("/{challengeId}")
+    @RolesAllowed("ROLE_USER")
     public ChallengeDTO modifyChallenge(@PathVariable final long challengeId,
             @RequestBody final NewChallengeDTO challenge) {
         return challengeService.modifyChallenge(challengeId, challenge);
